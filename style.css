@@ -23,4 +23,13 @@ body {
   border-radius: 10%;
   margin-left: 8px;
   margin-top: 440px;
+  position: absolute;
+}
+
+.bola {
+  background-color: gray;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  position: absolute;
 }
