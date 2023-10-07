@@ -1,4 +1,13 @@
 
+function boxColission(a, b) {
+  return (
+    a.minX <= b.maxX &&
+    a.maxX >= b.minX &&
+    a.minY <= b.maxY &&
+    a.maxY >= b.minY 
+  );
+}
+
 const gameObject = 
 {
   element: undefined,
@@ -6,16 +15,36 @@ const gameObject =
   y:1,
   dirX:0,
   dirY:0,
-  vel:10
+  vel:10,
+  
 }
 
 const player =  {...gameObject}
 player.element = document.getElementsByClassName('player')[0];
+player.x = 240;
+player.y = 430;
+player.dirY = 0;
+player.box= {
+  minX:0,
+  maxX:0,
+  minY:0,
+  maxY:0,
+  boxHeight:50,
+  boxWidth:100
+}
 
 const bola = {...gameObject}
 bola.element = document.getElementsByClassName('bola')[0];
 bola.x = 240;
 bola.y = 300;
+bola.box= {
+  minX:0,
+  maxX:0,
+  minY:0,
+  maxY:0,
+  boxHeight:50,
+  boxWidth:50
+}
 
 const keyPool = {
   arrowLeft:0,
@@ -65,9 +94,8 @@ const update = () => {
   }
 
   player.dirX = keyPool.arrowRight - keyPool.arrowLeft ;
+  
   // update da logica acontece aqui 
-  player.x += player.dirX * player.vel;
-
   if(bola.x < 0 ){
     bola.dirX = 1;
   }
@@ -84,14 +112,31 @@ const update = () => {
 
   bola.x += bola.dirX * bola.vel;
   bola.y += bola.dirY * bola.vel;
+  bola.box.maxX = bola.x + bola.box.boxWidth;
+  bola.box.minX = bola.x;
+  bola.box.maxY = bola.y + bola.box.boxHeight ;
+  bola.box.minY = bola.y ;
 
-  
+  player.x += player.dirX * player.vel;
+  player.y += player.dirY * player.vel;
+  player.box.maxX = player.x + player.box.boxWidth ;
+  player.box.minX = player.x;
+  player.box.maxY = player.y + player.box.boxHeight;
+  player.box.minY = player.y ;
 
-  //proto bounce( eixo x)
-  //player.dirX = (player.x > 400 && player.dirX > 0 ) || (player.x < 20 && player.dirX < 0) ? -player.dirX : player.dirX; 
+
   bola.element.style.marginLeft = `${bola.x}px`;
   bola.element.style.marginTop = `${bola.y}px`;
   player.element.style.marginLeft = `${player.x}px`;
+  player.element.style.marginTop = `${player.y}px`;
+
+  if(boxColission(player.box,bola.box))
+  {
+    player.element.style.backgroundColor = "red";
+    bola.dirY = -1;
+  }else{
+    player.element.style.backgroundColor = "blue";
+  }
   
 }
 
